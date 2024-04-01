@@ -16,7 +16,8 @@ class BooksCollector:
         if name in self.books_genre and genre in self.genre:
             self.books_genre[name] = genre
 
-    # получаем жанр книги по её имени
+    # получаем жанр книги по её имени  aaaa
+    # test string
     def get_book_genre(self, name):
         return self.books_genre.get(name)
 
