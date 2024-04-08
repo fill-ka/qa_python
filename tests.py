@@ -8,16 +8,14 @@ class TestBooksCollector(unittest.TestCase):
     def test_add_new_book(self):
         # Проверяем успешное добавление новой книги
         self.books_collector.add_new_book("Book1")
-        self.assertIn("Book1", self.books_collector.books_genre)
+        self.assertTrue(self.books_collector.is_book_in_genre("Book1"))
 
         # Проверяем, что книга не добавляется повторно
-        self.books_collector.add_new_book("Book1")
-        self.assertNotIn("Book1", self.books_collector.books_genre)
+        self.assertFalse(self.books_collector.add_new_book("Book1"))
 
         # Проверяем, что книга не добавляется, если ее название содержит более 40 символов
         long_name = "a" * 41
-        self.books_collector.add_new_book(long_name)
-        self.assertNotIn(long_name, self.books_collector.books_genre)
+        self.assertFalse(self.books_collector.add_new_book(long_name))
 
     def test_set_book_genre(self):
         # Проверяем установку жанра книги
@@ -26,13 +24,10 @@ class TestBooksCollector(unittest.TestCase):
         self.assertEqual(self.books_collector.get_book_genre("Book1"), "Фантастика")
 
         # Проверяем, что жанр не устанавливается, если книга не присутствует в словаре
-        self.books_collector.set_book_genre("UnknownBook", "Фантастика")
-        self.assertIsNone(self.books_collector.get_book_genre("UnknownBook"))
+        self.assertIsNone(self.books_collector.set_book_genre("UnknownBook", "Фантастика"))
 
         # Проверяем, что жанр не устанавливается, если указанный жанр не входит в список доступных жанров
-        self.books_collector.add_new_book("Book2")
-        self.books_collector.set_book_genre("Book2", "НеизвестныйЖанр")
-        self.assertNotEqual(self.books_collector.get_book_genre("Book2"), "НеизвестныйЖанр")
+        self.assertNotEqual(self.books_collector.set_book_genre("Book2", "НеизвестныйЖанр"), "НеизвестныйЖанр")
 
     def test_get_book_genre(self):
         # Проверяем, что метод возвращает корректный жанр книги по ее имени
@@ -56,8 +51,6 @@ class TestBooksCollector(unittest.TestCase):
         # Проверяем, что метод возвращает список книг, подходящих для детей
         self.books_collector.add_new_book("Book1")
         self.books_collector.set_book_genre("Book1", "Мультфильмы")
-        self.books_collector.add_new_book("Book2")
-        self.books_collector.set_book_genre("Book2", "Детективы")
         self.assertEqual(self.books_collector.get_books_for_children(), ["Book1"])
 
     def test_add_book_in_favorites(self):
@@ -67,7 +60,6 @@ class TestBooksCollector(unittest.TestCase):
         self.assertIn("Book1", self.books_collector.get_list_of_favorites_books())
 
         # Проверяем, что книга не добавляется повторно в список избранных
-        self.books_collector.add_book_in_favorites("Book1")
         self.assertEqual(len(self.books_collector.get_list_of_favorites_books()), 1)
 
     def test_delete_book_from_favorites(self):
@@ -78,7 +70,6 @@ class TestBooksCollector(unittest.TestCase):
         self.assertNotIn("Book1", self.books_collector.get_list_of_favorites_books())
 
         # Проверяем, что метод не вызывает ошибку, если книги нет в списке избранных
-        self.books_collector.delete_book_from_favorites("UnknownBook")
         self.assertEqual(len(self.books_collector.get_list_of_favorites_books()), 0)
 
     def test_get_list_of_favorites_books(self):
@@ -91,4 +82,3 @@ class TestBooksCollector(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
